@@ -24,6 +24,26 @@ router.post("/register", isValidRegister, isUnique, (req, res) => {
     });
 });
 
+router.post("/login", isValidLogin, (req, res) => {
+  const { user_email, user_password } = req.body;
+
+  Users.findByEmail(user_email)
+    .then((user) => {
+      const { user_first_name } = user;
+      if (user && bcryptjs.compareSync(user_password, user.user_password)) {
+        const token = generateToken(user);
+        res
+          .status(200)
+          .json({ message: `Welcome, ${user_first_name}.`, token });
+      } else {
+        res.status(401).json({ message: "Invalid credentials." });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: `Internal Error. ${err}` });
+    });
+});
+
 function generateToken(user) {
   const payload = {
     subject: user.user_id,
