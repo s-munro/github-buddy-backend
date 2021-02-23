@@ -16,7 +16,7 @@ if (process.env.DATABASE_URL) {
 const sharedConfig = {
   client: "pg",
   connection,
-  migration: { directory: "./api/data/migrations" },
+  migrations: { directory: "./api/data/migrations" },
   seeds: { directory: "./api/data/seeds" },
 };
 
@@ -24,6 +24,6 @@ module.exports = {
   development: { ...sharedConfig },
   production: {
     ...sharedConfig,
-    poo: { min: 2, max: 10 },
+    pool: { min: 2, max: 10 },
   },
 };
