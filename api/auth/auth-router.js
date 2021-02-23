@@ -15,15 +15,24 @@ router.post("/register", isValidRegister, isUnique, (req, res) => {
   const hash = bcryptjs.hashSync(credentials.user_password, rounds);
   credentials.user_password = hash;
 
-  res.status(200).json("made it through!");
-
-  // Users.add(credentials)
-  //   .then((user) => {
-  //     res.status(201).json(user);
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).json({ error: err });
-  //   });
+  Users.add(credentials)
+    .then((user) => {
+      res.status(201).json(user);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err });
+    });
 });
+
+function generateToken(user) {
+  const payload = {
+    subject: user.user_id,
+    email: user.user_email,
+  };
+  const options = {
+    expiresIn: 1000 * 60,
+  };
+  return jwt.sign(payload, jwtSecret, options);
+}
 
 module.exports = router;
