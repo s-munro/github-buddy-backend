@@ -20,7 +20,11 @@ async function isValidRegister(req, res, next) {
 }
 
 async function isValidLogin(req, res, next) {
-  return next();
+  const { user_email, user_password } = req.body;
+  if (!user_email || !user_password) {
+    return res.status(400).json({ message: "Missing credential(s)." });
+  }
+  next();
 }
 
 async function isUnique(req, res, next) {
